@@ -7,5 +7,7 @@ object MuzzColor {
     val SecondaryPink = Color(0xFFFCB1C4)
     val White = Color.White
     val LightGrey = Color(0xFFF3F5Fb)
+    val MediumGrey = Color(0xFF888888)
     val DarkGrey = Color(0xFF274255)
+    val Transparent = Color(0x00000000)
 }
