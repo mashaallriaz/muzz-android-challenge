@@ -1,4 +1,4 @@
-package com.muzz.androidchallenge.ui.screens
+package com.muzz.androidchallenge.ui.screens.chat
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues

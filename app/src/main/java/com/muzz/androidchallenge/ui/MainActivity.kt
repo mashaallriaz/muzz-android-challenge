@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.muzz.androidchallenge.ui.screens.ChatScreen
+import com.muzz.androidchallenge.ui.screens.chat.ChatScreen
 import com.muzz.androidchallenge.ui.theme.MuzzAndroidTheme
 import com.muzz.androidchallenge.ui.theme.MuzzColor
 import dagger.hilt.android.AndroidEntryPoint

@@ -1,4 +1,4 @@
-package com.muzz.androidchallenge.ui.screens
+package com.muzz.androidchallenge.ui.screens.chat
 
 import com.muzz.androidchallenge.domain.models.Message
 
