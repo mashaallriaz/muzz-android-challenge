@@ -1,11 +1,13 @@
 package com.muzz.androidchallenge.ui.screens.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -36,7 +38,7 @@ import com.muzz.androidchallenge.ui.theme.MuzzSpacing
 import com.muzz.androidchallenge.ui.theme.MuzzTypography
 
 @Composable
-fun ChatInputBar() {
+fun ChatInputBar(onSendMessage: (String) -> Unit) {
     var chatInputValue by remember { mutableStateOf(TextFieldValue("")) }
 
     Column(
@@ -45,12 +47,12 @@ fun ChatInputBar() {
             .background(MuzzColor.White)
     ) {
         HorizontalDivider(
-            modifier = Modifier
-                .padding(vertical = MuzzSpacing.spacing12)
-                .shadow(elevation = 1.dp),
+            modifier = Modifier.shadow(elevation = 1.dp),
             thickness = 1.dp,
             color = MuzzColor.Transparent
         )
+
+        Spacer(Modifier.height(MuzzSpacing.spacing12))
 
         Row(
             modifier = Modifier
@@ -84,8 +86,12 @@ fun ChatInputBar() {
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
-                    .background(MuzzColor.PrimaryPink)
-                    .padding(MuzzSpacing.spacing12),
+                    .background(if (chatInputValue.text.isNotBlank()) MuzzColor.PrimaryPink else MuzzColor.SecondaryPink)
+                    .padding(MuzzSpacing.spacing12)
+                    .clickable(enabled = chatInputValue.text.isNotBlank()) {
+                        onSendMessage(chatInputValue.text)
+                        chatInputValue = TextFieldValue("")
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(

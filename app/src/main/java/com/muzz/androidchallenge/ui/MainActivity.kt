@@ -13,7 +13,9 @@ import androidx.compose.ui.Modifier
 import com.muzz.androidchallenge.ui.screens.ChatScreen
 import com.muzz.androidchallenge.ui.theme.MuzzAndroidTheme
 import com.muzz.androidchallenge.ui.theme.MuzzColor
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
