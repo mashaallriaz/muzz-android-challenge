@@ -18,25 +18,26 @@ import com.muzz.androidchallenge.ui.theme.MuzzSpacing
 import com.muzz.androidchallenge.ui.theme.MuzzTypography
 
 @Composable
-fun ReceivedChatBubble(message: Message) {
+fun ReceivedChatBubble(message: Message, isGrouped: Boolean = false) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                horizontal = MuzzSpacing.spacing16,
-                vertical = MuzzSpacing.spacing4
+                start = MuzzSpacing.spacing16,
+                end = MuzzSpacing.spacing16,
+                top = if (isGrouped) MuzzSpacing.spacing2 else MuzzSpacing.spacing12
             ),
-        horizontalArrangement = Arrangement.End
+        horizontalArrangement = Arrangement.Start
     ) {
         Box(
             modifier = Modifier
                 .background(
-                    color = MuzzColor.PrimaryPink,
+                    color = MuzzColor.LightGrey,
                     shape = RoundedCornerShape(
                         topStart = 48f,
                         topEnd = 48f,
-                        bottomStart = 48f,
-                        bottomEnd = 0f
+                        bottomStart = 0f,
+                        bottomEnd = 48f
                     )
                 )
                 .padding(MuzzSpacing.spacing12)
@@ -45,7 +46,7 @@ fun ReceivedChatBubble(message: Message) {
             Text(
                 text = message.text,
                 style = MuzzTypography.bodyLarge,
-                color = MuzzColor.White
+                color = MuzzColor.DarkGrey
             )
         }
     }

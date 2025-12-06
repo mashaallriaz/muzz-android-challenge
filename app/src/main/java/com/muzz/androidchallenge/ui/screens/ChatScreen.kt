@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.muzz.androidchallenge.ui.screens.components.ChatInputBar
 import com.muzz.androidchallenge.ui.screens.components.ChatTopAppBar
+import com.muzz.androidchallenge.ui.screens.components.DateTimeHeader
 import com.muzz.androidchallenge.ui.screens.components.ReceivedChatBubble
 import com.muzz.androidchallenge.ui.screens.components.SentChatBubble
 import com.muzz.androidchallenge.ui.theme.MuzzSpacing
@@ -23,29 +24,40 @@ import kotlinx.coroutines.launch
 fun ChatScreen(viewModel: ChatViewModel = hiltViewModel()) {
     Column(modifier = Modifier.fillMaxSize()) {
         val state by viewModel.uiState.collectAsState()
-        val messagesList = state.messages.asReversed()
-        val messagesListState = rememberLazyListState()
+        val chatItems = state.chatItems.asReversed()
+        val chatItemsListState = rememberLazyListState()
         val coroutineScope = rememberCoroutineScope()
 
         ChatTopAppBar()
 
         LazyColumn(
             modifier = Modifier.weight(1f),
-            state = messagesListState,
+            state = chatItemsListState,
             contentPadding = PaddingValues(vertical = MuzzSpacing.spacing12),
             reverseLayout = true
         ) {
-            items(messagesList) { message ->
-                SentChatBubble(message)
-                ReceivedChatBubble(message)
+            items(chatItems) { item ->
+                when (item) {
+                    is ChatListItem.SectionHeader -> {
+                        DateTimeHeader(timestampText = item.timestampText)
+                    }
+
+                    is ChatListItem.MessageItem -> {
+                        if (item.message.senderId == 0) {
+                            SentChatBubble(message = item.message, isGrouped = item.isGrouped)
+                        } else {
+                            ReceivedChatBubble(message = item.message, isGrouped = item.isGrouped)
+                        }
+                    }
+                }
             }
         }
 
         ChatInputBar(onSendMessage = { message ->
             viewModel.onSendMessageClick(message)
             coroutineScope.launch {
-                if (messagesList.isNotEmpty()) {
-                    messagesListState.scrollToItem(0)
+                if (chatItems.isNotEmpty()) {
+                    chatItemsListState.scrollToItem(0)
                 }
             }
         })

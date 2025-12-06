@@ -6,6 +6,7 @@ import com.muzz.androidchallenge.domain.interactors.GetAllMessages
 import com.muzz.androidchallenge.domain.interactors.SendMessage
 import com.muzz.androidchallenge.domain.models.Message
 import com.muzz.androidchallenge.domain.models.Result
+import com.muzz.androidchallenge.ui.utils.DateTimeFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,7 +38,7 @@ class ChatViewModel @Inject constructor(
                     }
 
                     is Result.Success -> {
-                        _state.update { it.copy(messages = result.data) }
+                        _state.update { it.copy(chatItems = processMessages(result.data)) }
                     }
 
                     is Result.Error -> {
@@ -47,9 +48,39 @@ class ChatViewModel @Inject constructor(
             }.launchIn(viewModelScope)
     }
 
+    private fun processMessages(messages: List<Message>): List<ChatListItem> {
+        if (messages.isEmpty()) return emptyList()
+
+        val result = mutableListOf<ChatListItem>()
+
+        for (i in messages.indices) {
+            val current = messages[i]
+            val previous = messages.getOrNull(i - 1)
+
+            val needsHeader =
+                previous == null || (current.timestamp - previous.timestamp) > HEADER_BREAK_MILLISECONDS
+
+            if (needsHeader) {
+                result.add(ChatListItem.SectionHeader(DateTimeFormatter.format(current.timestamp)))
+            }
+
+            val grouped = previous != null && previous.senderId == current.senderId
+                    && (current.timestamp - previous.timestamp) < GROUPING_WINDOW_MILLISECONDS
+
+            result.add(ChatListItem.MessageItem(current, grouped))
+        }
+
+        return result
+    }
+
     fun onSendMessageClick(message: String) {
         viewModelScope.launch {
             sendMessage.invoke(Message(text = message, senderId = 1)).collect()
         }
+    }
+
+    companion object {
+        private const val GROUPING_WINDOW_MILLISECONDS = 20_000L       // 20 second grouping rule.
+        private const val HEADER_BREAK_MILLISECONDS = 3_600_000L       // 1 hour section rule.
     }
 }
