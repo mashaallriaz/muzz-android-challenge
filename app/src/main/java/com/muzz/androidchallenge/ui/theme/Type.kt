@@ -36,6 +36,13 @@ val MuzzTypography = Typography(
         lineHeight = 16.sp
     ),
 
+    bodyLarge = TextStyle(
+        fontFamily = brinkCobaneFontFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 20.sp
+    ),
+
     bodyMedium = TextStyle(
         fontFamily = brinkCobaneFontFamily,
         fontWeight = FontWeight.Normal,
