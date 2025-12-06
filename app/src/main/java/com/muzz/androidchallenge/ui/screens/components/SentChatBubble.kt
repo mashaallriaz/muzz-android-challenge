@@ -12,12 +12,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.muzz.androidchallenge.domain.models.Message
 import com.muzz.androidchallenge.ui.theme.MuzzColor
 import com.muzz.androidchallenge.ui.theme.MuzzSpacing
 import com.muzz.androidchallenge.ui.theme.MuzzTypography
 
 @Composable
-fun SentChatBubble(message: String) {
+fun SentChatBubble(message: Message) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -42,7 +43,7 @@ fun SentChatBubble(message: String) {
                 .widthIn(max = 280.dp)
         ) {
             Text(
-                text = message,
+                text = message.text,
                 style = MuzzTypography.bodyLarge,
                 color = MuzzColor.DarkGrey
             )

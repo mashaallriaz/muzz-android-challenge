@@ -38,10 +38,6 @@ fun ChatScreen(viewModel: ChatViewModel = hiltViewModel()) {
             items(messagesList) { message ->
                 SentChatBubble(message)
                 ReceivedChatBubble(message)
-                SentChatBubble(message)
-                ReceivedChatBubble(message)
-                SentChatBubble(message)
-                ReceivedChatBubble(message)
             }
         }
 
