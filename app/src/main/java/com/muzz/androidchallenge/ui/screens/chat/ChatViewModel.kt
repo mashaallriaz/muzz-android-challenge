@@ -63,7 +63,7 @@ class ChatViewModel @Inject constructor(
             }.launchIn(viewModelScope)
     }
 
-    private fun processMessages(messages: List<Message>): List<ChatListItem> {
+    fun processMessages(messages: List<Message>): List<ChatListItem> {
         if (messages.isEmpty()) return emptyList()
 
         val result = mutableListOf<ChatListItem>()
