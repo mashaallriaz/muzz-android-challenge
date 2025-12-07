@@ -3,9 +3,12 @@ package com.muzz.androidchallenge.ui.screens.chat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.muzz.androidchallenge.domain.interactors.GetAllMessages
+import com.muzz.androidchallenge.domain.interactors.GetCurrentUser
 import com.muzz.androidchallenge.domain.interactors.SendMessage
+import com.muzz.androidchallenge.domain.interactors.SetCurrentUser
 import com.muzz.androidchallenge.domain.models.Message
 import com.muzz.androidchallenge.domain.models.Result
+import com.muzz.androidchallenge.domain.models.User
 import com.muzz.androidchallenge.ui.utils.DateTimeFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,16 +23,28 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val getAllMessages: GetAllMessages,
-    private val sendMessage: SendMessage
+    private val sendMessage: SendMessage,
+    private val getCurrentUser: GetCurrentUser,
+    private val setCurrentUser: SetCurrentUser
 ) : ViewModel() {
     private val _state = MutableStateFlow(ChatViewState())
     val uiState = _state.asStateFlow()
 
     init {
-        getAllMessages()
+        observeCurrentUser()
+        observeAllMessages()
     }
 
-    fun getAllMessages() {
+    fun observeCurrentUser() {
+        getCurrentUser(Unit)
+            .onEach { result ->
+                if (result is Result.Success) {
+                    _state.update { it.copy(currentUser = result.data) }
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    fun observeAllMessages() {
         getAllMessages(Unit)
             .onEach { result ->
                 when (result) {
@@ -75,7 +90,18 @@ class ChatViewModel @Inject constructor(
 
     fun onSendMessageClick(message: String) {
         viewModelScope.launch {
-            sendMessage.invoke(Message(text = message, senderId = 1)).collect()
+            sendMessage.invoke(
+                params = Message(
+                    text = message,
+                    senderId = _state.value.currentUser?.id ?: User.SARAH.id
+                )
+            ).collect()
+        }
+    }
+
+    fun switchUser(user: User) {
+        viewModelScope.launch {
+            setCurrentUser(user.id).collect()
         }
     }
 

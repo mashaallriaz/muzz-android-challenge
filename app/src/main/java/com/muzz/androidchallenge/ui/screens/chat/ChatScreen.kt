@@ -2,7 +2,9 @@ package com.muzz.androidchallenge.ui.screens.chat
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -28,7 +30,7 @@ fun ChatScreen(viewModel: ChatViewModel = hiltViewModel()) {
         val chatItemsListState = rememberLazyListState()
         val coroutineScope = rememberCoroutineScope()
 
-        ChatTopAppBar()
+        ChatTopAppBar(currentUser = state.currentUser, onSwitchUser = viewModel::switchUser)
 
         LazyColumn(
             modifier = Modifier.weight(1f),
@@ -40,10 +42,11 @@ fun ChatScreen(viewModel: ChatViewModel = hiltViewModel()) {
                 when (item) {
                     is ChatListItem.SectionHeader -> {
                         DateTimeHeader(timestampText = item.timestampText)
+                        Spacer(Modifier.height(MuzzSpacing.spacing8))
                     }
 
                     is ChatListItem.MessageItem -> {
-                        if (item.message.senderId == 0) {
+                        if (item.message.senderId == state.currentUser?.id) {
                             SentChatBubble(message = item.message, isGrouped = item.isGrouped)
                         } else {
                             ReceivedChatBubble(message = item.message, isGrouped = item.isGrouped)
